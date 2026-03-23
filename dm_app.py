@@ -9,7 +9,16 @@ from dm_simulation_engine import run_dm_simulation
 st.set_page_config(page_title="DM Plant Simulation", layout="wide")
 
 # --- DATA LOADING & SESSION STATE ---
-config_path = r"c:\Users\Sarfaraz\Desktop\simulation_demo\chemical procedures demo\dm_plant_config.xlsx"
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "pending_update" not in st.session_state:
+    st.session_state.pending_update = None
+if "run_auto_ai" not in st.session_state:
+    st.session_state.run_auto_ai = False
+
+# Default configuration file (Using Stress Test by default for deployment)
+current_dir = os.path.dirname(__file__)
+config_path = os.path.join(current_dir, "dm_stress_config.xlsx")
 
 # 1. Handle File Upload or Reset
 uploaded_file = st.file_uploader("📂 Upload your DM Configuration Excel File", type=["xlsx"])
@@ -139,9 +148,9 @@ st.title("💧 Ion Exchange Demineralization (DM) Plant Simulator")
 if os.path.exists(config_path):
     with open(config_path, "rb") as file:
         st.download_button(
-            label="📥 Download DM Configuration Template (Excel)",
+            label="📥 Download Stress Configuration (Excel)",
             data=file,
-            file_name="dm_plant_config_template.xlsx",
+            file_name="dm_stress_config_template.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 else:
