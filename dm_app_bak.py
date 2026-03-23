@@ -6,53 +6,7 @@ import json
 from openai import OpenAI
 from dm_simulation_engine import run_dm_simulation
 
-st.set_page_config(page_title="DM Plant Pro Simulation", layout="wide", page_icon="💧")
-
-# --- CUSTOM PREMIUM CSS ---
-st.markdown("""
-    <style>
-    /* Remove ALL white borders and backgrounds from data editors and tab panels */
-    .stMetric { 
-        padding: 18px; 
-        border-radius: 10px; 
-        border: 1px solid rgba(128, 128, 128, 0.2);
-        background-color: rgba(128, 128, 128, 0.05);
-    }
-    /* Data editor containers - no white box */
-    .stDataFrame, [data-testid="stDataFrameResizable"] {
-        border: none !important;
-        background: transparent !important;
-    }
-    /* Tab panel - no white box */
-    .stTabs [data-baseweb="tab-panel"] { 
-        padding: 20px 0px; 
-        border: none !important;
-        background-color: transparent !important;
-    }
-    .stButton>button { border-radius: 8px; font-weight: 600; transition: all 0.3s; }
-    h1, h2, h3 { font-family: 'Inter', sans-serif; }
-    div[data-testid="stSidebar"] { border-right: 1px solid rgba(128, 128, 128, 0.15); }
-    </style>
-""", unsafe_allow_html=True)
-
-# 1. Dashboard Header & Logo
-c1, c2 = st.columns([1, 4])
-with c1:
-    if os.path.exists(os.path.join(os.path.dirname(__file__), "logo.png")):
-        st.image(os.path.join(os.path.dirname(__file__), "logo.png"), width=120)
-with c2:
-    st.title("💧 Demineralization (DM) Plant | Digital Twin")
-    st.markdown("*Precision Ion-Exchange Simulation & AI Diagnostics*")
-
-# 2. Universal Reset / Back Button
-if st.button("🔄 Reset Environment & Clear Results", help="Clears current simulation data and scrolls to top"):
-    # Clear only simulation results and triggers, keep configuration
-    for key in ['dm_results', 'agg_pct', 'pending_update', 'run_auto_ai']:
-        if key in st.session_state:
-            del st.session_state[key]
-    st.rerun()
-
-st.divider()
+st.set_page_config(page_title="DM Plant Simulation", layout="wide")
 
 # --- DATA LOADING & SESSION STATE ---
 if "messages" not in st.session_state:
@@ -89,14 +43,7 @@ elif st.session_state.get('df_globals') is None:
         st.stop()
 
 # --- AI ASSISTANT CORE ---
-# Safe loading for both local and cloud deployment
-def get_safe_api_key():
-    try:
-        return st.secrets["DEEPSEEK_API_KEY"]
-    except:
-        return "sk-84b78e39161d49e081bb04d0fcc99fd9" # Fallback for local dev
-
-DEEPSEEK_API_KEY = get_safe_api_key()
+DEEPSEEK_API_KEY = "sk-84b78e39161d49e081bb04d0fcc99fd9"
 client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
 
 def get_ai_diagnostic(user_input=None, is_auto=False):
@@ -195,7 +142,7 @@ with st.sidebar:
         st.session_state['pending_update'] = None
         st.rerun()
 
-# st.title("💧 Ion Exchange Demineralization (DM) Plant Simulator")
+st.title("💧 Ion Exchange Demineralization (DM) Plant Simulator")
 
 # 1. Download Template Button
 if os.path.exists(config_path):
