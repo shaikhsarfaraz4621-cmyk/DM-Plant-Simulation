@@ -1,0 +1,69 @@
+Time,Machine,Batch,Event,Details
+7.621163324645127,W1_RawWater,B_1,Batch Arrived,Size: 7.8 m3
+7.621163324645127,DEBUG,B_1,Entering process_machine,W2_Cation
+7.621163324645127,W2_Cation,B_1,Processing Started,Volume: 7.8 m3
+10.19934204322329,W1_RawWater,B_2,Batch Arrived,Size: 16.6 m3
+10.19934204322329,DEBUG,B_2,Entering process_machine,W2_Cation
+12.822301172621994,W2_Cation,B_1,Processing Finished,Sent to downstream buffer.
+12.822301172621994,W2_Cation,B_2,Processing Started,Volume: 16.6 m3
+12.822301172621994,DEBUG,B_1,Entering process_machine,W3_Degasser
+12.822301172621994,W3_Degasser,B_1,Processing Started,Volume: 7.8 m3
+16.959579635558878,W3_Degasser,B_1,Processing Finished,Sent to downstream buffer.
+16.959579635558878,DEBUG,B_1,Entering process_machine,W4_Anion
+16.959579635558878,W4_Anion,B_1,Processing Started,Volume: 7.8 m3
+22.160717483535745,W4_Anion,B_1,Processing Finished,Sent to downstream buffer.
+22.160717483535745,DEBUG,B_1,Entering process_machine,W5_MixedBed
+22.160717483535745,W5_MixedBed,B_1,Processing Started,Volume: 7.8 m3
+23.9213347639297,W2_Cation,B_2,Processing Finished,Sent to downstream buffer.
+23.9213347639297,DEBUG,B_2,Entering process_machine,W3_Degasser
+23.9213347639297,W3_Degasser,B_2,Processing Started,Volume: 16.6 m3
+26.464493681588685,W3_Degasser,B_2,Processing Finished,Sent to downstream buffer.
+26.464493681588685,DEBUG,B_2,Entering process_machine,W4_Anion
+26.464493681588685,W4_Anion,B_2,Processing Started,Volume: 16.6 m3
+28.662139793506828,W5_MixedBed,B_1,Processing Finished,Sent to downstream buffer.
+29.128092174896427,W1_RawWater,B_3,Batch Arrived,Size: 18.5 m3
+29.128092174896427,DEBUG,B_3,Entering process_machine,W2_Cation
+29.128092174896427,W2_Cation,B_3,Processing Started,Volume: 18.5 m3
+37.563527272896394,W4_Anion,B_2,Processing Finished,Sent to downstream buffer.
+37.563527272896394,DEBUG,B_2,Entering process_machine,W5_MixedBed
+37.563527272896394,W5_MixedBed,B_2,Processing Started,Volume: 16.6 m3
+38.5161124484123,W1_RawWater,B_4,Batch Arrived,Size: 11.3 m3
+38.5161124484123,DEBUG,B_4,Entering process_machine,W2_Cation
+41.49265970433653,W2_Cation,B_3,Processing Finished,Sent to downstream buffer.
+41.49265970433653,W2_Cation,B_4,Processing Started,Volume: 11.3 m3
+41.49265970433653,DEBUG,B_3,Entering process_machine,W3_Degasser
+41.49265970433653,W3_Degasser,B_3,Processing Started,Volume: 18.5 m3
+45.30614064056225,W3_Degasser,B_3,Processing Finished,Sent to downstream buffer.
+45.30614064056225,DEBUG,B_3,Entering process_machine,W4_Anion
+45.30614064056225,W4_Anion,B_3,Processing Started,Volume: 18.5 m3
+48.19910610376032,W1_RawWater,B_5,Batch Arrived,Size: 15.8 m3
+48.19910610376032,DEBUG,B_5,Entering process_machine,W2_Cation
+49.00791221083393,W2_Cation,B_4,Processing Finished,Sent to downstream buffer.
+49.00791221083393,W2_Cation,B_5,Processing Started,Volume: 15.8 m3
+49.00791221083393,DEBUG,B_4,Entering process_machine,W3_Degasser
+49.00791221083393,W3_Degasser,B_4,Processing Started,Volume: 11.3 m3
+51.15469617687498,W3_Degasser,B_4,Processing Finished,Sent to downstream buffer.
+51.15469617687498,DEBUG,B_4,Entering process_machine,W4_Anion
+51.437319262031025,W5_MixedBed,B_2,Processing Finished,Sent to downstream buffer.
+57.67070817000235,W4_Anion,B_3,Processing Finished,Sent to downstream buffer.
+57.67070817000235,W4_Anion,B_4,Processing Started,Volume: 11.3 m3
+57.67070817000235,DEBUG,B_3,Entering process_machine,W5_MixedBed
+57.67070817000235,W5_MixedBed,B_3,Processing Started,Volume: 18.5 m3
+59.537348115458265,W2_Cation,B_5,Processing Finished,Sent to downstream buffer.
+59.537348115458265,DEBUG,B_5,Entering process_machine,W3_Degasser
+59.537348115458265,W3_Degasser,B_5,Processing Started,Volume: 15.8 m3
+62.65038928280331,W3_Degasser,B_5,Processing Finished,Sent to downstream buffer.
+62.65038928280331,DEBUG,B_5,Entering process_machine,W4_Anion
+65.18596067649975,W4_Anion,B_4,Processing Finished,Sent to downstream buffer.
+65.18596067649975,W4_Anion,B_5,Processing Started,Volume: 15.8 m3
+65.18596067649975,DEBUG,B_4,Entering process_machine,W5_MixedBed
+73.12641758180247,W5_MixedBed,B_3,Processing Finished,Sent to downstream buffer.
+73.12641758180247,W5_MixedBed,B_4,Processing Started,Volume: 11.3 m3
+75.71539658112408,W4_Anion,B_5,Processing Finished,Sent to downstream buffer.
+75.71539658112408,DEBUG,B_5,Entering process_machine,W5_MixedBed
+82.52048321492423,W5_MixedBed,B_4,Processing Finished,Sent to downstream buffer.
+82.52048321492423,W5_MixedBed,B_5,Processing Started,Volume: 15.8 m3
+95.68227809570465,W5_MixedBed,B_5,Processing Finished,Sent to downstream buffer.
+95.7729242791003,W1_RawWater,B_6,Batch Arrived,Size: 14.9 m3
+95.7729242791003,DEBUG,B_6,Entering process_machine,W2_Cation
+95.7729242791003,W2_Cation,B_6,Processing Started,Volume: 14.9 m3
