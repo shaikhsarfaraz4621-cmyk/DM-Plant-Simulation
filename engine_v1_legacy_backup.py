@@ -37,7 +37,6 @@ class DMPlantSimulation:
         self.quality_violations = 0
         self.system_failed = False
         self.batches_processed = 0
-        self.all_batches_done = self.env.event()
 
     def log_event(self, machine, batch_id, event, details=""):
         self.event_log.append({
@@ -90,9 +89,6 @@ class DMPlantSimulation:
             if w1.level + batch_size > w1.capacity:
                 self.log_event("System", batch_id, "SYSTEM FAILURE (Spillage)", f"W1 Overflow: {w1.level + batch_size:.1f} > {w1.capacity}")
                 self.system_failed = True
-                if self.system_failed:
-                    if not self.all_batches_done.triggered:
-                        self.all_batches_done.succeed()
                 break
                 
             yield w1.put(batch_size)
@@ -101,7 +97,7 @@ class DMPlantSimulation:
             self.env.process(self.process_batch(batch_id, batch_size))
             batch_counter += 1
 
-    def process_machine(self, m_id, batch_size, batch_id, influent_hardness):
+    def process_machine(self, m_id, batch_size, batch_id):
         config = self.machine_configs[m_id]
         max_cap = config.get('Max_Resin_Capacity_eq', 0)
 
@@ -110,7 +106,7 @@ class DMPlantSimulation:
             
             if max_cap > 0:
                 regen_threshold = (config['Regen_Trigger_Percentage_pct'] / 100.0) * max_cap
-                # USE PASSED HARDNESS FOR PREDICTED LOAD
+                influent_hardness = self.global_params['Influent_Hardness_eq_m3']
                 predicted_add = batch_size * influent_hardness * (config['Hardness_Load_Factor_eq_per_m3'] / 10.0)
                 
                 if self.resin_loads[m_id] >= regen_threshold or self.resin_loads[m_id] + predicted_add > max_cap:
@@ -124,7 +120,7 @@ class DMPlantSimulation:
                     self.log_event(m_id, "System", "Regeneration Finished", f"Unit cleaned for {batch_id}")
 
             self.log_machine_state(m_id, "Processing")
-            self.log_event(m_id, batch_id, "Processing Started", f"Volume: {batch_size:.1f} m3, In-Hardness: {influent_hardness:.2f}")
+            self.log_event(m_id, batch_id, "Processing Started", f"Volume: {batch_size:.1f} m3")
             
             if config['Type'] == 'Flow':
                 proc_time = batch_size / config['Flow_Rate_m3_min']
@@ -144,24 +140,15 @@ class DMPlantSimulation:
                 yield self.env.timeout(proc_time - time_to_fail)
             else:
                 yield self.env.timeout(proc_time)
-            
-            if self.system_failed:
-                if not self.all_batches_done.triggered:
-                    self.all_batches_done.succeed()
-                return 0.0
                 
             if max_cap > 0:
-                # ADD LOAD BASED ON CURRENT BATCH HARDNESS
+                influent_hardness = self.global_params['Influent_Hardness_eq_m3']
                 added_load = batch_size * influent_hardness * (config['Hardness_Load_Factor_eq_per_m3'] / 10.0)
                 self.resin_loads[m_id] += added_load
                 self.log_resin_loads()
                 
             self.log_machine_state(m_id, "Idle")
             self.log_event(m_id, batch_id, "Processing Finished", "Sent downstream.")
-            
-            # RETURN NEW REDUCED HARDNESS (Assume 90% efficiency for Exchangers, 0% for others)
-            efficiency = 0.9 if max_cap > 0 else 0.0
-            return influent_hardness * (1 - efficiency)
 
     def process_batch(self, batch_id, batch_size):
         sequence = [
@@ -171,39 +158,28 @@ class DMPlantSimulation:
             ("W4_W5_Buffer", "W5_MixedBed", "W5_Output_Tank")
         ]
         
-        current_hardness = self.global_params['Influent_Hardness_eq_m3']
-        
         for in_tank_id, m_id, out_tank_id in sequence:
             if self.system_failed: break
             yield self.tanks[in_tank_id].get(batch_size)
             self.log_tank_levels()
-            
-            # CALL PROCESS MACHINE AND UPDATE HARDNESS FOR NEXT STAGE
-            current_hardness = yield self.env.process(self.process_machine(m_id, batch_size, batch_id, current_hardness))
-            
+            yield self.env.process(self.process_machine(m_id, batch_size, batch_id))
             yield self.tanks[out_tank_id].put(batch_size) 
             self.log_tank_levels()
             
             if m_id == "W5_MixedBed":
                 limit = self.global_params['Quality_Violation_Threshold_eq_m3']
-                # QUALITY CHECK BASED ON THE FINAL OUTPUT HARDNESS (0.15 Leakage Factor)
-                if (current_hardness * 0.15) > limit:
+                load_pct = self.resin_loads[m_id] / self.machine_configs[m_id]['Max_Resin_Capacity_eq']
+                if (load_pct * 0.15) > limit:
                     self.quality_violations += 1
                 self.batches_processed += 1
-            
-            # TRIGGER STOP IF ALL BATCHES ARE DONE
-            if self.batches_processed >= self.global_params['Max_Simulation_Batches']:
-                if not self.all_batches_done.triggered:
-                    self.all_batches_done.succeed()
 
-    def run(self, until=10000):
+    def run(self, until=1000):
         self.env.process(self.arrival_process())
-        self.log_resin_loads()
         self.log_tank_levels()
+        self.log_resin_loads()
         for m_id in self.machines.keys():
             self.log_machine_state(m_id, "Idle")
-        # STOP EITHER WHEN CLOCK HITS 'UNTIL' OR WHEN ALL BATCHES FINISH
-        self.env.run(until=self.all_batches_done | self.env.timeout(until))
+        self.env.run(until=until)
         return {
             "Time": self.env.now,
             "Batches_Processed": self.batches_processed,
