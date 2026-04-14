@@ -1,0 +1,26 @@
+# Node.js
+**/node_modules/
+**/dist/
+**/build/
+.env
+.env.local
+.env.production
+npm-debug.log*
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+*$py.class
+**/.venv/
+**/venv/
+**/ENV/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Excel/Data (Optional - ignore temporary files)
+~$*.xlsx
+**/test_out.csv
+**/artifacts/
+**/scratch/
