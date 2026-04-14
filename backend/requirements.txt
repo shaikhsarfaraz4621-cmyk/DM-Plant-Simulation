@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+simpy
+numpy
+pydantic
+scipy
+pandas
+openpyxl
+python-multipart
+requests
